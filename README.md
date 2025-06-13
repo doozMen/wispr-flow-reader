@@ -2,15 +2,21 @@
 
 > ⚠️ **Early Stage Software**: This tool is in early development and may have bugs or incomplete features. Use at your own risk.
 
-A command-line tool to query and analyze transcriptions from the [Wispr Flow](https://wispr.com/) voice dictation app database on macOS.
+A command-line tool to query and analyze voice transcriptions from [Wispr Flow](https://wispr.com/) and [WhisperNotes](https://mazzystar.com/whispernotes) on macOS.
 
 ## Features
 
+### Wispr Flow
 - List recent transcriptions with filtering options
 - Search transcriptions by text content
 - Export transcriptions to JSON, CSV, or plain text
 - View statistics about your transcription usage
 - Filter by application, date range, or sharing status
+
+### WhisperNotes (Experimental)
+- Import transcriptions from WhisperNotes exports
+- Search and list imported transcriptions
+- Designed for offline meeting transcriptions
 
 ## Installation
 
@@ -25,6 +31,35 @@ swift run wispr-flow-reader
 ```
 
 ## Usage
+
+### Wispr Flow Commands
+
+The tool now uses subcommands for better organization:
+
+```bash
+# New syntax (recommended)
+wispr-flow-reader wispr list
+wispr-flow-reader wispr search "keyword"
+wispr-flow-reader wispr export --format json
+wispr-flow-reader wispr stats
+
+# Legacy syntax (still works)
+wispr-flow-reader list
+wispr-flow-reader search "keyword"
+```
+
+### WhisperNotes Commands
+
+```bash
+# Import WhisperNotes data (required first)
+wispr-flow-reader whisper import /path/to/exports
+
+# List WhisperNotes transcriptions
+wispr-flow-reader whisper list
+
+# Search WhisperNotes transcriptions
+wispr-flow-reader whisper search "meeting notes"
+```
 
 ### List Recent Transcriptions
 
@@ -106,6 +141,15 @@ Contributions are welcome! Please feel free to submit issues or pull requests.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## WhisperNotes Integration Note
+
+WhisperNotes uses macOS sandboxing which prevents direct database access. To use WhisperNotes transcriptions with this tool:
+
+1. Export your transcriptions from WhisperNotes (if the app supports export)
+2. Import them using `wispr-flow-reader whisper import <path>`
+
+Full WhisperNotes integration is pending discovery of the app's export format or alternative access methods.
+
 ## Disclaimer
 
-This tool is not affiliated with, endorsed by, or sponsored by Wispr or the Wispr Flow application. It is an independent open-source project for personal use.
+This tool is not affiliated with, endorsed by, or sponsored by Wispr, Wispr Flow, Mazzystar, or WhisperNotes. It is an independent open-source project for personal use.

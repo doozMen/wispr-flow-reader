@@ -1,0 +1,62 @@
+[
+  {
+    "app": "dev.warp.Warp-Stable",
+    "asrText": "Now just check that we removed all the debug prints we added and that the commit is clean and contains only the things related to the ticket we fixed",
+    "duration": 15.88,
+    "formattedText": "Now just check that we removed all the debug prints we added and that the commit is clean and contains only the things related to the ticket we fixed.",
+    "numWords": 29,
+    "shareType": "yes",
+    "status": "formatted",
+    "timestamp": "2025-06-13 09:05:24.381 +00:00",
+    "transcriptEntityId": "c0ffcf5d-5155-47a0-a50b-03e7ed2b79a2",
+    "url": "unknown"
+  },
+  {
+    "app": "dev.warp.Warp-Stable",
+    "asrText": "okay i just had to read base with develop can we do a test again to see if everything the tracking is working",
+    "duration": 13.64,
+    "formattedText": "Okay, I just had to read base with develop. Can we do a test again to see if everything the tracking is working.",
+    "numWords": 23,
+    "shareType": "yes",
+    "status": "formatted",
+    "timestamp": "2025-06-13 08:40:43.231 +00:00",
+    "transcriptEntityId": "bae98bad-ad55-48df-8522-8ec9dbef9d12",
+    "url": "unknown"
+  },
+  {
+    "app": "com.microsoft.teams2",
+    "asrText": "it's not feasible just my understanding their release candidate which was sent by Newsblood is it 16.0.0 yeah yeah all right 16.1.0 will be for us will only be a sports update in the contribution I think but as you tickets that are either already in progress or that are still here also with 16.1.0 because I think it'd be good if we could try and with the exception of Formula One but at least for cycling and football any of the improvements recently priority improvements let's visit that way we see to get them included as well but it can be discussed of course if we think Where is it gone? Ah, here, okay, great. Helda has created a ticket for this as well. To make sure we can track it. At the moment I labeled any other sports be able to focus that we can test it as well before we need to make, we don't make the release candidate of the 16.1.0, but, yeah, I think I saw that the NMO ticket I'm working on is also marked for 16.1.0. I think I changed that. You changed it? Okay. Yeah. Yeah. Yeah. I changed it. I moved anything that's not sports. It's just a 16.2 dot zero. Okay great yeah yesterday to kinda keep it as clean as possible, I know it was a priority ticket, but yeah, I think adding many new things so that releases not the goal it's rolling out newsblocks to old titles including sports it's not putting in extra stuff so anything else that's currently like in progress i review i put 16 or 2 dot zero label on i didn't touch anything that was already done because there's no point in adding labels i think so that's a bit the summary clear or clear enough for now who is all right then we can move into stand up and i suggest just to shout out blockers challenges anything to share hello no just hope that stuff that's in review can now actually be reviewed and merged and everything with the new branches do we need collaboration i'll check i didn't check today yet if they actually did anything so i'll check and then if needed i'll send a reminder maybe important to share as well it's also in the slack message but the review process where anything actually our funnel is like locked in the middle because it only always needs to be reviewed um we also discussed that we want to move away from that as of early q3 yeah that we should be able to just review ourselves and merge stuff to the codebase um so we are also trying to move forward with that because it's yeah very annoying okay your pull request on the queue ios are reviewed and approved oh great all of them but i see one of them as a merge conflict okay well all of them oh it's a booty pests yeah all of them okay yeah um dmitry asked me to check this so this one so there's an open one on android but i still it's still conflict free and already approved by davy so i will emerge that okay anyone else oh yeah just the review thing so i saw that the tracking is on 16.2 so um yeah android got merged but i don't get a review for ios but i guess that's because they're busy um should we ping him anymore or just wait which one do you mean the ga or the draft one no no the draft is uh that's deep links so the g the user properties yeah that's like yeah but you can always uh yes or yeah i did and then they said i i will review and then nothing happened actually gentle remind me reminder okay we'll try thanks bye anything",
+    "duration": 352.48,
+    "formattedText": "It's not feasible just my understanding their release candidate which was sent by Newsblood is it 16.0.0 yeah yeah all right 16.1.0 will be for us will only be a sports update in the contribution I think but as you tickets that are either already in progress or that are still here also with 16.1.0 because I think it'd be good if we could try and with the exception of Formula One but at least for cycling and football any of the improvements recently priority improvements let's visit that way we see to get them included as well but it can be discussed of course if we think Where is it gone? Ah, here, okay, great. Helda has created a ticket for this as well. To make sure we can track it. At the moment I labeled any other sports be able to focus that we can test it as well before we need to make, we don't make the release candidate of the 16.1.0, but, yeah, I think I saw that the NMO ticket I'm working on is also marked for 16.1.0. I think I changed that. You changed it? Okay. Yeah. Yeah. Yeah. I changed it. I moved anything that's not sports. It's just a 16.2 dot zero. Okay great yeah yesterday to kinda keep it as clean as possible, I know it was a priority ticket, but yeah, I think adding many new things so that releases not the goal it's rolling out newsblocks to old titles including sports it's not putting in extra stuff so anything else that's currently like in progress i review i put 16 or 2 dot zero label on i didn't touch anything that was already done because there's no point in adding labels i think so that's a bit the summary clear or clear enough for now who is all right then we can move into stand up and i suggest just to shout out blockers challenges anything to share hello no just hope that stuff that's in review can now actually be reviewed and merged and everything with the new branches do we need collaboration i'll check i didn't check today yet if they actually did anything so i'll check and then if needed i'll send a reminder maybe important to share as well it's also in the slack message but the review process where anything actually our funnel is like locked in the middle because it only always needs to be reviewed um we also discussed that we want to move away from that as of early q3 yeah that we should be able to just review ourselves and merge stuff to the codebase um so we are also trying to move forward with that because it's yeah very annoying okay your pull request on the queue ios are reviewed and approved oh great all of them but i see one of them as a merge conflict okay well all of them oh it's a booty pests yeah all of them okay yeah um dmitry asked me to check this so this one so there's an open one on android but i still it's still conflict free and already approved by davy so i will emerge that okay anyone else oh yeah just the review thing so i saw that the tracking is on 16.2 so um yeah android got merged but i don't get a review for ios but i guess that's because they're busy um should we ping him anymore or just wait which one do you mean the ga or the draft one no no the draft is uh that's deep links so the g the user properties yeah that's like yeah but you can always uh yes or yeah i did and then they said i i will review and then nothing happened actually gentle remind me reminder okay we'll try thanks bye anything.",
+    "numWords": 649,
+    "shareType": "yes",
+    "status": "formatted",
+    "timestamp": "2025-06-13 08:07:15.614 +00:00",
+    "transcriptEntityId": "95b6c8c5-0798-44c9-bfe9-44cc5e6cc3de",
+    "url": "unknown"
+  },
+  {
+    "app": "com.electron.wispr-flow",
+    "asrText": "So Helder has created a new ticket.",
+    "duration": 4.08,
+    "formattedText": "Helder has created a new ticket.",
+    "numWords": 7,
+    "shareType": "yes",
+    "status": "formatted",
+    "timestamp": "2025-06-13 08:07:08.918 +00:00",
+    "transcriptEntityId": "370d356d-26b3-4a99-87a8-ab84b7eb4e4d",
+    "url": "unknown"
+  },
+  {
+    "app": "dev.warp.Warp-Stable",
+    "asrText": "Still not working, could you check the logs?",
+    "duration": 3.4,
+    "formattedText": "Still not working, could you check the logs?",
+    "numWords": 8,
+    "shareType": "yes",
+    "status": "formatted",
+    "timestamp": "2025-06-13 01:01:17.321 +00:00",
+    "transcriptEntityId": "c994a0e2-4156-46d3-9179-d6f7601c30d1",
+    "url": "unknown"
+  }
+]

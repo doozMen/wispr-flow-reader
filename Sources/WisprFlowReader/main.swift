@@ -55,10 +55,179 @@ func formatTimestamp(_ timestamp: String) -> String {
 struct WisprFlowReader: ParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "wispr-flow-reader",
-        abstract: "Query and analyze Wispr Flow transcriptions",
-        subcommands: [List.self, Search.self, Export.self, Stats.self]
+        abstract: "Query and analyze voice transcriptions from Wispr Flow and WhisperNotes",
+        subcommands: [
+            Wispr.self,
+            Whisper.self,
+            List.self, Search.self, Export.self, Stats.self  // Legacy commands for backward compatibility
+        ]
     )
 }
+
+// MARK: - Wispr Flow Commands
+
+extension WisprFlowReader {
+    struct Wispr: ParsableCommand {
+        static let configuration = CommandConfiguration(
+            commandName: "wispr",
+            abstract: "Commands for Wispr Flow transcriptions",
+            subcommands: [WisprList.self, WisprSearch.self, WisprExport.self, WisprStats.self]
+        )
+    }
+    
+    struct WisprList: ParsableCommand {
+        static let configuration = CommandConfiguration(commandName: "list", abstract: "List Wispr Flow transcriptions")
+        
+        @Option(name: .shortAndLong, help: "Number of transcriptions to show")
+        var limit: Int = 10
+        
+        @Option(name: .shortAndLong, help: "Filter by application name")
+        var app: String?
+        
+        @Flag(name: .long, help: "Show only shared transcriptions")
+        var sharedOnly = false
+        
+        func run() throws {
+            var command = List()
+            command.limit = limit
+            command.app = app
+            command.sharedOnly = sharedOnly
+            try command.run()
+        }
+    }
+    
+    struct WisprSearch: ParsableCommand {
+        static let configuration = CommandConfiguration(commandName: "search", abstract: "Search Wispr Flow transcriptions")
+        
+        @Argument(help: "Search query")
+        var query: String
+        
+        @Option(name: .shortAndLong, help: "Number of results to show")
+        var limit: Int = 10
+        
+        func run() throws {
+            var command = Search()
+            command.query = query
+            command.limit = limit
+            try command.run()
+        }
+    }
+    
+    struct WisprExport: ParsableCommand {
+        static let configuration = CommandConfiguration(commandName: "export", abstract: "Export Wispr Flow transcriptions")
+        
+        @Option(name: .shortAndLong, help: "Output format (json, csv, txt)")
+        var format: String = "json"
+        
+        @Option(name: .shortAndLong, help: "Output file path")
+        var output: String?
+        
+        @Option(name: .long, help: "Start date (YYYY-MM-DD)")
+        var startDate: String?
+        
+        @Option(name: .long, help: "End date (YYYY-MM-DD)")
+        var endDate: String?
+        
+        func run() throws {
+            var command = Export()
+            command.format = format
+            command.output = output
+            command.startDate = startDate
+            command.endDate = endDate
+            try command.run()
+        }
+    }
+    
+    struct WisprStats: ParsableCommand {
+        static let configuration = CommandConfiguration(commandName: "stats", abstract: "Show Wispr Flow statistics")
+        
+        @Option(name: .long, help: "Group by period (day, week, month)")
+        var groupBy: String = "day"
+        
+        func run() throws {
+            var command = Stats()
+            command.groupBy = groupBy
+            try command.run()
+        }
+    }
+}
+
+// MARK: - WhisperNotes Commands
+
+extension WisprFlowReader {
+    struct Whisper: ParsableCommand {
+        static let configuration = CommandConfiguration(
+            commandName: "whisper",
+            abstract: "Commands for WhisperNotes transcriptions",
+            subcommands: [WhisperImport.self, WhisperList.self, WhisperSearch.self]
+        )
+    }
+    
+    struct WhisperImport: ParsableCommand {
+        static let configuration = CommandConfiguration(
+            commandName: "import",
+            abstract: "Import WhisperNotes transcriptions from exported files"
+        )
+        
+        @Argument(help: "Path to WhisperNotes export file or directory")
+        var path: String
+        
+        @Option(name: .shortAndLong, help: "Output database path")
+        var database: String = "~/.wispr-flow-reader/whisper.db"
+        
+        func run() throws {
+            print("⚠️  WhisperNotes Integration")
+            print("\nWhisperNotes uses macOS sandboxing, preventing direct database access.")
+            print("\nTo import your transcriptions:")
+            print("1. Open WhisperNotes")
+            print("2. Export your transcriptions (if the app supports it)")
+            print("3. Run: wispr-flow-reader whisper import <export-path>\n")
+            print("Note: Full implementation pending based on WhisperNotes export format.")
+            
+            // TODO: Implement import once we know the export format
+            throw WhisperError.notImplemented
+        }
+    }
+    
+    struct WhisperList: ParsableCommand {
+        static let configuration = CommandConfiguration(
+            commandName: "list",
+            abstract: "List WhisperNotes transcriptions (requires import first)"
+        )
+        
+        @Option(name: .shortAndLong, help: "Number of transcriptions to show")
+        var limit: Int = 10
+        
+        func run() throws {
+            print("⚠️  WhisperNotes data not available")
+            print("\nPlease import your WhisperNotes transcriptions first:")
+            print("wispr-flow-reader whisper import <path-to-exports>\n")
+            throw WhisperError.noDataAvailable
+        }
+    }
+    
+    struct WhisperSearch: ParsableCommand {
+        static let configuration = CommandConfiguration(
+            commandName: "search",
+            abstract: "Search WhisperNotes transcriptions (requires import first)"
+        )
+        
+        @Argument(help: "Search query")
+        var query: String
+        
+        @Option(name: .shortAndLong, help: "Number of results to show")
+        var limit: Int = 10
+        
+        func run() throws {
+            print("⚠️  WhisperNotes data not available")
+            print("\nPlease import your WhisperNotes transcriptions first:")
+            print("wispr-flow-reader whisper import <path-to-exports>\n")
+            throw WhisperError.noDataAvailable
+        }
+    }
+}
+
+// MARK: - Legacy Commands (for backward compatibility)
 
 extension WisprFlowReader {
     struct List: ParsableCommand {
@@ -455,6 +624,20 @@ enum DatabaseError: Error, LocalizedError {
         switch self {
         case .databaseNotFound(let path):
             return "Wispr Flow database not found at: \(path)"
+        }
+    }
+}
+
+enum WhisperError: Error, LocalizedError {
+    case notImplemented
+    case noDataAvailable
+    
+    var errorDescription: String? {
+        switch self {
+        case .notImplemented:
+            return "WhisperNotes integration is not yet implemented"
+        case .noDataAvailable:
+            return "No WhisperNotes data available. Please import first."
         }
     }
 }
