@@ -1,6 +1,8 @@
 # Wispr Flow Reader
 
-A command-line tool to query and analyze transcriptions from the Wispr Flow database.
+> ⚠️ **Early Stage Software**: This tool is in early development and may have bugs or incomplete features. Use at your own risk.
+
+A command-line tool to query and analyze transcriptions from the [Wispr Flow](https://wispr.com/) voice dictation app database on macOS.
 
 ## Features
 
@@ -95,3 +97,15 @@ The tool reads from the Wispr Flow SQLite database located at:
 ## Privacy Note
 
 This tool reads your local Wispr Flow database in read-only mode. It does not modify any data or connect to any external services.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit issues or pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Disclaimer
+
+This tool is not affiliated with, endorsed by, or sponsored by Wispr or the Wispr Flow application. It is an independent open-source project for personal use.
