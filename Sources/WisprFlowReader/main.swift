@@ -2,6 +2,55 @@ import Foundation
 import SQLite
 import ArgumentParser
 
+// MARK: - Helper Functions
+
+func parseDate(_ dateString: String) -> Date? {
+    // Try with fractional seconds first
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    if let date = formatter.date(from: dateString) {
+        return date
+    }
+    
+    // Try without fractional seconds
+    formatter.formatOptions = [.withInternetDateTime]
+    if let date = formatter.date(from: dateString) {
+        return date
+    }
+    
+    // Try format with timezone offset (e.g., "2025-06-03 19:03:31.586 +00:00")
+    let timezoneFormatter = DateFormatter()
+    timezoneFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS Z"
+    if let date = timezoneFormatter.date(from: dateString) {
+        return date
+    }
+    
+    // Try without milliseconds
+    timezoneFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+    if let date = timezoneFormatter.date(from: dateString) {
+        return date
+    }
+    
+    // Try basic date format
+    let basicFormatter = DateFormatter()
+    basicFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    return basicFormatter.date(from: dateString)
+}
+
+func formatTimestamp(_ timestamp: String) -> String {
+    // Use the same parsing logic as parseDate
+    guard let date = parseDate(timestamp) else {
+        return timestamp // Return original if parsing fails
+    }
+    
+    let displayFormatter = DateFormatter()
+    displayFormatter.dateStyle = .medium
+    displayFormatter.timeStyle = .medium
+    displayFormatter.timeZone = TimeZone.current
+    
+    return displayFormatter.string(from: date)
+}
+
 @main
 struct WisprFlowReader: ParsableCommand {
     static let configuration = CommandConfiguration(
@@ -36,7 +85,7 @@ extension WisprFlowReader {
             
             for transcription in transcriptions {
                 print("\n---")
-                print("Date: \(transcription.timestamp)")
+                print("Date: \(formatTimestamp(transcription.timestamp))")
                 print("App: \(transcription.app ?? "Unknown")")
                 if let url = transcription.url, !url.isEmpty {
                     print("URL: \(url)")
@@ -70,7 +119,7 @@ extension WisprFlowReader {
             
             for transcription in transcriptions {
                 print("\n---")
-                print("Date: \(transcription.timestamp)")
+                print("Date: \(formatTimestamp(transcription.timestamp))")
                 print("App: \(transcription.app ?? "Unknown")")
                 
                 let text = transcription.formattedText ?? transcription.asrText ?? ""
@@ -128,7 +177,6 @@ extension WisprFlowReader {
         func exportAsJSON(_ transcriptions: [Transcription]) throws -> String {
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            encoder.dateEncodingStrategy = .iso8601
             let data = try encoder.encode(transcriptions)
             return String(data: data, encoding: .utf8) ?? ""
         }
@@ -145,7 +193,7 @@ extension WisprFlowReader {
         func exportAsText(_ transcriptions: [Transcription]) -> String {
             transcriptions.map { t in
                 """
-                Date: \(t.timestamp)
+                Date: \(formatTimestamp(t.timestamp))
                 App: \(t.app ?? "Unknown")
                 \(t.url.map { "URL: \($0)\n" } ?? "")Words: \(t.numWords ?? 0)
                 
@@ -212,7 +260,7 @@ struct Transcription: Codable {
     let asrText: String?
     let formattedText: String?
     let editedText: String?
-    let timestamp: Date
+    let timestamp: String
     let app: String?
     let url: String?
     let shareType: String?
@@ -242,7 +290,7 @@ class DatabaseReader {
     private let asrText = Expression<String?>("asrText")
     private let formattedText = Expression<String?>("formattedText")
     private let editedText = Expression<String?>("editedText")
-    private let timestamp = Expression<Date>("timestamp")
+    private let timestamp = Expression<String>("timestamp")
     private let app = Expression<String?>("app")
     private let url = Expression<String?>("url")
     private let shareType = Expression<String?>("shareType")
@@ -277,18 +325,18 @@ class DatabaseReader {
         
         return try db.prepare(query).map { row in
             Transcription(
-                transcriptEntityId: row[id],
-                asrText: row[asrText],
-                formattedText: row[formattedText],
-                editedText: row[editedText],
-                timestamp: row[timestamp],
-                app: row[app],
-                url: row[url],
-                shareType: row[shareType],
-                status: row[status],
-                language: row[language],
-                duration: row[duration],
-                numWords: row[numWords]
+                transcriptEntityId: row[self.id],
+                asrText: row[self.asrText],
+                formattedText: row[self.formattedText],
+                editedText: row[self.editedText],
+                timestamp: row[self.timestamp],
+                app: row[self.app],
+                url: row[self.url],
+                shareType: row[self.shareType],
+                status: row[self.status],
+                language: row[self.language],
+                duration: row[self.duration],
+                numWords: row[self.numWords]
             )
         }
     }
@@ -305,18 +353,18 @@ class DatabaseReader {
         
         return try db.prepare(query).map { row in
             Transcription(
-                transcriptEntityId: row[id],
-                asrText: row[asrText],
-                formattedText: row[formattedText],
-                editedText: row[editedText],
-                timestamp: row[timestamp],
-                app: row[app],
-                url: row[url],
-                shareType: row[shareType],
-                status: row[status],
-                language: row[language],
-                duration: row[duration],
-                numWords: row[numWords]
+                transcriptEntityId: row[self.id],
+                asrText: row[self.asrText],
+                formattedText: row[self.formattedText],
+                editedText: row[self.editedText],
+                timestamp: row[self.timestamp],
+                app: row[self.app],
+                url: row[self.url],
+                shareType: row[self.shareType],
+                status: row[self.status],
+                language: row[self.language],
+                duration: row[self.duration],
+                numWords: row[self.numWords]
             )
         }
     }
@@ -324,32 +372,30 @@ class DatabaseReader {
     func exportTranscriptions(startDate: String? = nil, endDate: String? = nil) throws -> [Transcription] {
         var query = historyTable.order(timestamp.desc)
         
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        
-        if let startDate = startDate, let date = formatter.date(from: startDate) {
-            query = query.filter(timestamp >= date)
+        if let startDate = startDate {
+            query = query.filter(timestamp >= startDate)
         }
         
-        if let endDate = endDate, let date = formatter.date(from: endDate) {
-            let nextDay = date.addingTimeInterval(86400) // Add one day
-            query = query.filter(timestamp < nextDay)
+        if let endDate = endDate {
+            // Add one day to include the entire end date
+            let nextDay = endDate + "T23:59:59"
+            query = query.filter(timestamp <= nextDay)
         }
         
         return try db.prepare(query).map { row in
             Transcription(
-                transcriptEntityId: row[id],
-                asrText: row[asrText],
-                formattedText: row[formattedText],
-                editedText: row[editedText],
-                timestamp: row[timestamp],
-                app: row[app],
-                url: row[url],
-                shareType: row[shareType],
-                status: row[status],
-                language: row[language],
-                duration: row[duration],
-                numWords: row[numWords]
+                transcriptEntityId: row[self.id],
+                asrText: row[self.asrText],
+                formattedText: row[self.formattedText],
+                editedText: row[self.editedText],
+                timestamp: row[self.timestamp],
+                app: row[self.app],
+                url: row[self.url],
+                shareType: row[self.shareType],
+                status: row[self.status],
+                language: row[self.language],
+                duration: row[self.duration],
+                numWords: row[self.numWords]
             )
         }
     }
@@ -372,15 +418,17 @@ class DatabaseReader {
         var transcriptionCount = 0
         for row in allTranscriptions {
             transcriptionCount += 1
-            totalWords += row[numWords] ?? 0
-            totalDuration += row[duration] ?? 0
+            totalWords += row[self.numWords] ?? 0
+            totalDuration += row[self.duration] ?? 0
             
-            if let app = row[app] {
+            if let app = row[self.app] {
                 appCounts[app, default: 0] += 1
             }
             
-            let period = formatter.string(from: row[timestamp])
-            periodCounts[period, default: 0] += 1
+            if let date = parseDate(row[self.timestamp]) {
+                let period = formatter.string(from: date)
+                periodCounts[period, default: 0] += 1
+            }
         }
         
         let averageWPM = totalDuration > 0 ? (Double(totalWords) / totalDuration) * 60 : 0
